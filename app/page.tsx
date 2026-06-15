@@ -1,30 +1,30 @@
 "use client";
 
-import React from "react";
 import {
-  Phone,
-  MapPin,
-  CalendarDays,
-  Droplets,
-  Sparkles,
-  ShieldCheck,
-  MessageCircle,
-  Wind,
-  CheckCircle2,
-  X,
-  Menu,
-  Star,
-  ClipboardList,
-} from "lucide-react";
-import Image from "next/image";
-import {
+  AnimatePresence,
   motion,
   useScroll,
   useTransform,
-  AnimatePresence,
   type Variants,
 } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import {
+  CalendarDays,
+  Camera,
+  CheckCircle2,
+  ClipboardList,
+  Droplets,
+  MapPin,
+  Menu,
+  MessageCircle,
+  Phone,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Wind,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
 
 // --- TİPLER VE VERİLER (DATA) ---
 interface Service {
@@ -63,34 +63,30 @@ const PRICING_DATA = {
     { name: "Yerinde Yıkama", price: "100.0₺", unit: "M2" },
   ],
   koltuk: [
-    { name: "Orta Puf Koltuk Yıkama", price: "300.0₺", unit: "ADET" },
+    { name: "Koltuk Takımı Yıkama", price: "2000.0₺", unit: "ADET" },
+    { name: "Köşe Takımı Yıkama", price: "1500.0₺", unit: "ADET" },
     { name: "Koltuk Takımı Yıkama (Yastıklı)", price: "2500.0₺", unit: "ADET" },
+    { name: "Koltuk Takımı Yıkama (Çekme Yataklı)", price: "2500.0₺", unit: "ADET" },
+    { name: "Koltuk Takımı Yıkama (Yastıklı ve Çekme Yataklı)", price: "2500.0₺", unit: "ADET" },
+    { name: "Kanepe Yıkama", price: "750.0₺", unit: "ADET" },
+    { name: "Tekli Koltuk Yıkama", price: "500.0₺", unit: "ADET" },
+    { name: "Orta Puf Koltuk Yıkama", price: "300.0₺", unit: "ADET" },
     { name: "Baza (Çift Kişilik) Yıkama", price: "750.0₺", unit: "ADET" },
     { name: "Baza (Tek Kişilik) Yıkama", price: "500.0₺", unit: "ADET" },
-    { name: "Kanepe Yıkama", price: "750.0₺", unit: "ADET" },
     { name: "Yatak (Bebek) Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Koltuk Takımı Yıkama", price: "2000.0₺", unit: "ADET" },
-    { name: "Koltuk Takımı (Çekme Yataklı)", price: "2500.0₺", unit: "ADET" },
-    {
-      name: "Koltuk Takımı (Yastıklı & Yataklı)",
-      price: "2500.0₺",
-      unit: "ADET",
-    },
-    { name: "Tekli Koltuk Yıkama", price: "500.0₺", unit: "ADET" },
     { name: "Yatak (Tek Kişilik) Yıkama", price: "1000.0₺", unit: "ADET" },
     { name: "Sandalye Yıkama", price: "200.0₺", unit: "ADET" },
     { name: "Sandalye (Küçük) Yıkama", price: "150.0₺", unit: "ADET" },
+    { name: "Tek Kişilik Yatak (Tek Yüzü) Yıkama", price: "750.0₺", unit: "ADET" },
+    { name: "Çift Kişilik Yatak (Tek Yüzü) Yıkama", price: "1000.0₺", unit: "ADET" },
+    { name: "Yatak Kılıfı (Çift Kişilik) Yıkama", price: "1000.0₺", unit: "ADET" },
+    { name: "Yatak Başlığı (Çift Kişilik) Yıkama", price: "750.0₺", unit: "ADET" },
+    { name: "Yatak Başlığı (Tek Kişilik) Yıkama", price: "500.0₺", unit: "ADET" },
+    { name: "Yatak (Çift Kişilik) Yıkama", price: "1500.0₺", unit: "ADET" },
+    { name: "Yatak Kılıfı (Tek Kişilik) Yıkama", price: "750.0₺", unit: "ADET" },
+    { name: "Kanepe Yıkama (Çekme Yataklı)", price: "900.0₺", unit: "ADET" },
     { name: "Araç Koltuk Yıkama", price: "2000.0₺", unit: "ADET" },
     { name: "Oto Kuaför", price: "5000.0₺", unit: "ADET" },
-    { name: "Tek Kişilik Yatak (Tek Yüzü)", price: "750.0₺", unit: "ADET" },
-    { name: "Çift Kişilik Yatak (Tek Yüzü)", price: "1000.0₺", unit: "ADET" },
-    { name: "Yatak Kılıfı (Çift Kişilik)", price: "1000.0₺", unit: "ADET" },
-    { name: "Yatak Başlığı (Çift Kişilik)", price: "750.0₺", unit: "ADET" },
-    { name: "Köşe Takımı Yıkama", price: "1500.0₺", unit: "ADET" },
-    { name: "Yatak Başlığı (Tek Kişilik)", price: "500.0₺", unit: "ADET" },
-    { name: "Yatak (Çift Kişilik) Yıkama", price: "1500.0₺", unit: "ADET" },
-    { name: "Yatak Kılıfı (Tek Kişilik)", price: "750.0₺", unit: "ADET" },
-    { name: "Kanepe Yıkama (Çekme Yataklı)", price: "900.0₺", unit: "ADET" },
   ],
 };
 
@@ -160,6 +156,24 @@ const FEATURES: string[] = [
   "%100 Memnuniyet Garantisi",
 ];
 
+const GALLERY_IMAGES = [
+  "/about1.jpeg",
+  "/about2.jpeg",
+  "/about3.jpeg",
+  "/about4.jpeg",
+  "/about5.jpeg",
+  "/about6.jpeg",
+  "/about7.jpeg",
+];
+
+const GALLERY_VIDEOS = [
+  "/about-vd1.mp4",
+  "/about-vd2.mp4",
+  "/about-vd3.mp4",
+  "/about-vd4.mp4",
+  "/about-vd5.mp4",
+];
+
 // --- ANİMASYON AYARLARI (FRAMER MOTION) ---
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -207,6 +221,8 @@ export default function Home() {
 
   // YENİ: Modal, Form ve Tip State'leri
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedMedia, setSelectedMedia] = useState<{ type: 'video' | 'image', url: string } | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"hali" | "koltuk">("hali");
   const [modalType, setModalType] = useState("randevu"); // 'randevu' veya 'fiyat'
@@ -249,15 +265,62 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "Hijyen Halı Temizleme",
+    image: "https://hijyenhalitemizleme.com/logo.jpeg",
+    "@id": "https://hijyenhalitemizleme.com",
+    url: "https://hijyenhalitemizleme.com",
+    telephone: CONTACT_INFO.phoneRaw,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Toki Cd. No: 18/B",
+      addressLocality: "Adilcevaz",
+      addressRegion: "Bitlis",
+      postalCode: "13500",
+      addressCountry: "TR",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 38.8021,
+      longitude: 42.7303,
+    },
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "08:00",
+      closes: "20:00",
+    },
+    priceRange: "₺₺",
+    sameAs: [
+      `https://instagram.com/${CONTACT_INFO.instagram.replace("@", "")}`,
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-blue-200">
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* 1. NAVBAR / HEADER (PREMIUM VERSION) */}
       <header className="fixed w-full top-0 z-50 bg-white border-b border-slate-100 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-24 max-w-7xl mx-auto xl:px-4">
             {/* Logo Alanı (shrink-0 ile sıkışmasını engelliyoruz) */}
             <div
-              className="flex items-center h-full py-3 shrink-0 z-50 relative min-w-[150px] mr-4 xl:mr-10"
+              className="flex items-center h-full py-3 shrink-0 z-50 relative min-w-[150px] mr-4 xl:mr-10 cursor-pointer"
               onClick={() => {
                 window.scrollTo({
                   top: 0,
@@ -265,10 +328,13 @@ export default function Home() {
                 });
               }}
             >
-              <img
+              <Image
                 src="/logo.jpeg"
                 alt="Hijyen Halı Temizleme Logosu"
+                width={150}
+                height={70}
                 className="object-contain h-[55px] sm:h-[70px] w-auto mix-blend-multiply"
+                priority
               />
             </div>
             {/* Desktop Menü Linkleri (Premium Tipografi: Küçük, Büyük Harf ve Geniş Aralık) */}
@@ -577,33 +643,46 @@ export default function Home() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            {/* Sol Taraf - Premium Görsel */}
+            {/* Sol Taraf - Premium Görsel (Videolu & Galerili) */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="lg:w-1/2 relative"
+              className="lg:w-1/2 relative w-full px-4 sm:px-0"
             >
-              <div className="aspect-[4/5] max-w-md mx-auto relative rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/10">
-                <Image
-                  src="https://images.unsplash.com/photo-1600166898405-da9535204843?q=80&w=1974&auto=format&fit=crop"
-                  alt="Tertemiz Rulo Halılar"
-                  fill
-                  className="object-cover object-center"
+              <div className="aspect-[4/5] w-full max-w-md mx-auto relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 group bg-slate-100">
+                <img
+                  src="/about1.jpeg"
+                  alt="Hijyen Halı Temizleme Fabrikası"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-blue-900/10 mix-blend-multiply"></div>
+
+                {/* Karanlık Overlay & Cam Efektli Buton (Daha belirginleştirildi) */}
+                <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center transition-all duration-300">
+                  <button 
+                    onClick={() => setIsGalleryOpen(true)}
+                    className="flex flex-col items-center gap-2 sm:gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md px-6 py-5 rounded-2xl border border-white/30 text-white transition-all transform hover:scale-105 hover:shadow-2xl"
+                  >
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white/20 rounded-full flex items-center justify-center shrink-0 shadow-inner">
+                      <Camera className="w-6 h-6 text-white drop-shadow-md" />
+                    </div>
+                    <span className="font-bold tracking-widest text-xs sm:text-sm uppercase text-center drop-shadow-md">
+                      Tesisimizi İnceleyin
+                    </span>
+                  </button>
+                </div>
               </div>
 
-              {/* Memnuniyet Badge (Görselin Üzerinde) */}
-              <div className="absolute -bottom-6 -right-6 md:right-10 bg-white p-6 rounded-2xl shadow-xl flex items-center gap-4 border border-slate-50">
-                <div className="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center shrink-0">
-                  <span className="text-2xl">⭐</span>
+              {/* Memnuniyet Badge (Mobil uyumlu hale getirildi, taşma sorunu çözüldü) */}
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-right-4 md:right-4 bg-white p-4 sm:p-6 rounded-2xl shadow-xl flex items-center gap-3 sm:gap-4 border border-slate-50 w-[85%] sm:w-auto z-10">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-50 rounded-xl flex items-center justify-center shrink-0">
+                  <span className="text-xl sm:text-2xl">⭐</span>
                 </div>
                 <div>
-                  <div className="font-extrabold text-2xl text-slate-900 leading-none mb-1">
+                  <div className="font-extrabold text-xl sm:text-2xl text-slate-900 leading-none mb-1">
                     %100
                   </div>
-                  <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                  <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">
                     Müşteri Memnuniyeti
                   </div>
                 </div>
@@ -846,9 +925,11 @@ export default function Home() {
                     Salı, Perş, Cmt
                   </span>
                 </li>
-                <li className="flex justify-between pt-2">
+                <li className="flex justify-between pt-2 items-center">
                   <span className="text-slate-400">Pazar:</span>
-                  <span className="text-white font-medium">Açığız</span>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20 tracking-wide">
+                    Kapalı
+                  </span>
                 </li>
               </ul>
             </div>
@@ -1041,7 +1122,7 @@ export default function Home() {
                       }
                       className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all bg-white"
                     >
-                      <option value="Adilcevaz">Adilcevaz Merkez</option>
+                      <option value="Adilcevaz">Adilcevaz</option>
                       <option value="Ahlat">Ahlat (Salı, Perş, Cmt)</option>
                     </select>
                   </div>
@@ -1077,6 +1158,122 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* GALERİ MODAL (POPUP) */}
+      <AnimatePresence>
+        {isGalleryOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex flex-col"
+          >
+            {/* KAPAT BUTONU (Sabit Sağ Üst) */}
+            <button
+              onClick={() => setIsGalleryOpen(false)}
+              className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all z-10"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            {/* SCROLL EDİLEBİLİR ALAN */}
+            <div className="flex-1 overflow-y-auto w-full custom-scrollbar">
+              <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 p-4 md:p-8 pt-20 md:pt-24">
+                {/* 1. VİDEOLAR */}
+                {GALLERY_VIDEOS.map((vid, idx) => (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.1 }}
+                    key={`vid-${idx}`}
+                    onClick={() => setSelectedMedia({ type: 'video', url: vid })}
+                    className="aspect-square relative rounded-xl overflow-hidden bg-slate-800 shadow-lg cursor-pointer group"
+                  >
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all z-10"></div>
+                    <video
+                      src={vid}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </motion.div>
+                ))}
+
+                {/* 2. GÖRSELLER */}
+                {GALLERY_IMAGES.map((img, idx) => (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: (GALLERY_VIDEOS.length + idx) * 0.1 }}
+                    key={`img-${idx}`}
+                    onClick={() => setSelectedMedia({ type: 'image', url: img })}
+                    className="aspect-square relative rounded-xl overflow-hidden bg-slate-800 shadow-lg group cursor-pointer"
+                  >
+                    <Image
+                      src={img}
+                      alt={`Galeri Görseli ${idx + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* MEDYA GÖSTERİCİ (TAM EKRAN) MODAL */}
+      <AnimatePresence>
+        {selectedMedia && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setSelectedMedia(null)}
+          >
+            {/* Kapat Butonu */}
+            <button
+              onClick={() => setSelectedMedia(null)}
+              className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all z-[70]"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {selectedMedia.type === 'video' ? (
+                <video
+                  src={selectedMedia.url}
+                  autoPlay
+                  controls
+                  playsInline
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                />
+              ) : (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={selectedMedia.url}
+                    alt="Büyük Görsel"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* FLOATING WHATSAPP BUTTON */}
       <AnimatePresence>
         {showFloatingButton && (

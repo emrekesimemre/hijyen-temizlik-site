@@ -66,8 +66,16 @@ const PRICING_DATA = {
     { name: "Koltuk Takımı Yıkama", price: "2000.0₺", unit: "ADET" },
     { name: "Köşe Takımı Yıkama", price: "1500.0₺", unit: "ADET" },
     { name: "Koltuk Takımı Yıkama (Yastıklı)", price: "2500.0₺", unit: "ADET" },
-    { name: "Koltuk Takımı Yıkama (Çekme Yataklı)", price: "2500.0₺", unit: "ADET" },
-    { name: "Koltuk Takımı Yıkama (Yastıklı ve Çekme Yataklı)", price: "2500.0₺", unit: "ADET" },
+    {
+      name: "Koltuk Takımı Yıkama (Çekme Yataklı)",
+      price: "2500.0₺",
+      unit: "ADET",
+    },
+    {
+      name: "Koltuk Takımı Yıkama (Yastıklı ve Çekme Yataklı)",
+      price: "2500.0₺",
+      unit: "ADET",
+    },
     { name: "Kanepe Yıkama", price: "750.0₺", unit: "ADET" },
     { name: "Tekli Koltuk Yıkama", price: "500.0₺", unit: "ADET" },
     { name: "Orta Puf Koltuk Yıkama", price: "300.0₺", unit: "ADET" },
@@ -77,13 +85,37 @@ const PRICING_DATA = {
     { name: "Yatak (Tek Kişilik) Yıkama", price: "1000.0₺", unit: "ADET" },
     { name: "Sandalye Yıkama", price: "200.0₺", unit: "ADET" },
     { name: "Sandalye (Küçük) Yıkama", price: "150.0₺", unit: "ADET" },
-    { name: "Tek Kişilik Yatak (Tek Yüzü) Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Çift Kişilik Yatak (Tek Yüzü) Yıkama", price: "1000.0₺", unit: "ADET" },
-    { name: "Yatak Kılıfı (Çift Kişilik) Yıkama", price: "1000.0₺", unit: "ADET" },
-    { name: "Yatak Başlığı (Çift Kişilik) Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Yatak Başlığı (Tek Kişilik) Yıkama", price: "500.0₺", unit: "ADET" },
+    {
+      name: "Tek Kişilik Yatak (Tek Yüzü) Yıkama",
+      price: "750.0₺",
+      unit: "ADET",
+    },
+    {
+      name: "Çift Kişilik Yatak (Tek Yüzü) Yıkama",
+      price: "1000.0₺",
+      unit: "ADET",
+    },
+    {
+      name: "Yatak Kılıfı (Çift Kişilik) Yıkama",
+      price: "1000.0₺",
+      unit: "ADET",
+    },
+    {
+      name: "Yatak Başlığı (Çift Kişilik) Yıkama",
+      price: "750.0₺",
+      unit: "ADET",
+    },
+    {
+      name: "Yatak Başlığı (Tek Kişilik) Yıkama",
+      price: "500.0₺",
+      unit: "ADET",
+    },
     { name: "Yatak (Çift Kişilik) Yıkama", price: "1500.0₺", unit: "ADET" },
-    { name: "Yatak Kılıfı (Tek Kişilik) Yıkama", price: "750.0₺", unit: "ADET" },
+    {
+      name: "Yatak Kılıfı (Tek Kişilik) Yıkama",
+      price: "750.0₺",
+      unit: "ADET",
+    },
     { name: "Kanepe Yıkama (Çekme Yataklı)", price: "900.0₺", unit: "ADET" },
     { name: "Araç Koltuk Yıkama", price: "2000.0₺", unit: "ADET" },
     { name: "Oto Kuaför", price: "5000.0₺", unit: "ADET" },
@@ -222,7 +254,10 @@ export default function Home() {
   // YENİ: Modal, Form ve Tip State'leri
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<{ type: 'video' | 'image', url: string } | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<{
+    type: "video" | "image";
+    url: string;
+  } | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"hali" | "koltuk">("hali");
   const [modalType, setModalType] = useState("randevu"); // 'randevu' veya 'fiyat'
@@ -659,7 +694,7 @@ export default function Home() {
 
                 {/* Karanlık Overlay & Cam Efektli Buton (Daha belirginleştirildi) */}
                 <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center transition-all duration-300">
-                  <button 
+                  <button
                     onClick={() => setIsGalleryOpen(true)}
                     className="flex flex-col items-center gap-2 sm:gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md px-6 py-5 rounded-2xl border border-white/30 text-white transition-all transform hover:scale-105 hover:shadow-2xl"
                   >
@@ -1186,7 +1221,9 @@ export default function Home() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.1 }}
                     key={`vid-${idx}`}
-                    onClick={() => setSelectedMedia({ type: 'video', url: vid })}
+                    onClick={() =>
+                      setSelectedMedia({ type: "video", url: vid })
+                    }
                     className="aspect-square relative rounded-xl overflow-hidden bg-slate-800 shadow-lg cursor-pointer group"
                   >
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all z-10"></div>
@@ -1208,7 +1245,9 @@ export default function Home() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: (GALLERY_VIDEOS.length + idx) * 0.1 }}
                     key={`img-${idx}`}
-                    onClick={() => setSelectedMedia({ type: 'image', url: img })}
+                    onClick={() =>
+                      setSelectedMedia({ type: "image", url: img })
+                    }
                     className="aspect-square relative rounded-xl overflow-hidden bg-slate-800 shadow-lg group cursor-pointer"
                   >
                     <Image
@@ -1251,7 +1290,7 @@ export default function Home() {
               className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              {selectedMedia.type === 'video' ? (
+              {selectedMedia.type === "video" ? (
                 <video
                   src={selectedMedia.url}
                   autoPlay

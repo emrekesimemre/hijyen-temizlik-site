@@ -16,15 +16,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://hijyenhalitemizleme.com"),
-  title:
-    "Hijyen Halı Temizleme | Adilcevaz ve Ahlat'ın En İyi Halı Yıkama Fabrikası",
+  title: "Hijyen Halı Temizleme | Adilcevaz ve Ahlat Halı Yıkama Fabrikası",
   description:
-    "Adilcevaz ve Ahlat bölgesinde profesyonel halı, koltuk, yorgan ve perde yıkama hizmetleri. Özel şampuanlar, %100 memnuniyet garantisi ve ücretsiz servis imkanı.",
+    "Bitlis ili Adilcevaz ve Ahlat'ta profesyonel halı, koltuk, yorgan ve perde yıkama. Ücretsiz servis, özel şampuanlar ve %100 memnuniyet garantisi. 0555 063 13 14",
   keywords: [
     "halı yıkama",
     "koltuk yıkama",
     "adilcevaz halı yıkama",
     "ahlat halı yıkama",
+    "bitlis halı yıkama",
     "hijyen halı yıkama",
     "hijyen temizlik",
     "perde yıkama",
@@ -32,26 +32,32 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Hijyen Halı Temizleme" }],
   creator: "Hijyen Halı Temizleme",
-  // EKSİK 1 GİDERİLDİ: Canonical URL eklendi. (metadataBase ile birleşip root URL'yi oluşturur)
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Hijyen Halı Temizleme | Profesyonel Temizlik",
+    title: "Hijyen Halı Temizleme | Adilcevaz, Ahlat ve Bitlis Halı Yıkama",
     description:
-      "Adilcevaz ve Ahlat bölgesinde garantili ve derinlemesine halı, koltuk, battaniye ve yorgan temizliği. 0555 063 13 14",
+      "Bitlis ili Adilcevaz ve Ahlat'ta garantili halı, koltuk, battaniye ve yorgan temizliği. Ücretsiz servis. 0555 063 13 14",
     url: "https://hijyenhalitemizleme.com",
     siteName: "Hijyen Halı Temizleme",
     images: [
       {
         url: "/logo.jpeg",
-        width: 800,
-        height: 600,
-        alt: "Hijyen Halı Temizleme Logosu",
+        width: 1024,
+        height: 566,
+        alt: "Hijyen Halı Temizleme — Adilcevaz ve Ahlat Halı Yıkama Fabrikası",
       },
     ],
     locale: "tr_TR",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hijyen Halı Temizleme | Adilcevaz ve Ahlat Halı Yıkama",
+    description:
+      "Bitlis ili Adilcevaz ve Ahlat'ta profesyonel halı yıkama. Ücretsiz servis, %100 memnuniyet garantisi.",
+    images: ["/logo.jpeg"],
   },
   robots: {
     index: true,
@@ -65,10 +71,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
-    // EKSİK 2 GİDERİLDİ: iOS cihazlar için Apple Touch Icon desteği eklendi
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
+  manifest: "/manifest.json",
 };
 
 export const viewport: Viewport = {
@@ -80,7 +89,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // EKSİK 3 GİDERİLDİ: Tracking ID environment variable'a çekildi.
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
   return (

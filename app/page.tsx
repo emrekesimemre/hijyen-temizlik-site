@@ -305,13 +305,15 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: "Hijyen Halı Temizleme",
+    description:
+      "Bitlis ili Adilcevaz ve Ahlat'ta profesyonel halı, koltuk, yorgan ve perde yıkama hizmetleri. Ücretsiz servis ve %100 memnuniyet garantisi.",
     image: "https://hijyenhalitemizleme.com/logo.jpeg",
     "@id": "https://hijyenhalitemizleme.com",
     url: "https://hijyenhalitemizleme.com",
     telephone: CONTACT_INFO.phoneRaw,
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Toki Cd. No: 18/B",
+      streetAddress: "Alacaatlı Mah. Toki Cd. No: 18/B",
       addressLocality: "Adilcevaz",
       addressRegion: "Bitlis",
       postalCode: "13500",
@@ -322,6 +324,11 @@ export default function Home() {
       latitude: 38.8021,
       longitude: 42.7303,
     },
+    areaServed: [
+      { "@type": "City", name: "Adilcevaz" },
+      { "@type": "City", name: "Ahlat" },
+      { "@type": "AdministrativeArea", name: "Bitlis" },
+    ],
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: [
@@ -531,9 +538,9 @@ export default function Home() {
               </span>
             </motion.div>
 
-            {/* 2. ANA BAŞLIK (İstenen Slogan, Premium Tipografi) */}
+            {/* 2. ANA BAŞLIK (SEO + Slogan) */}
             <motion.div variants={fadeInUp}>
-              <h1 className="text-5xl md:text-7xl text-white mb-6 tracking-tight leading-[1.1] drop-shadow-lg">
+              <h1 className="text-4xl md:text-6xl text-white mb-4 tracking-tight leading-[1.1] drop-shadow-lg">
                 <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-400">
                   Temizlik
                 </span>{" "}
@@ -548,7 +555,7 @@ export default function Home() {
               className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl leading-relaxed drop-shadow-md font-light"
             >
               Özel şampuanlar ve tam otomatik makinelerimizle halılarınızı
-              sadece yüzeysel değil, derinlemesine temizliyoruz.{" "}
+              sadece yüzeysel değil, derinlemesine temizliyoruz.
               <strong className="text-white font-medium">
                 Sevdikleriniz güvenle temas etsin.
               </strong>
@@ -1140,7 +1147,7 @@ export default function Home() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    placeholder="Örn: Ahmet Yılmaz"
+                    placeholder="Örn: Tarık POLATÇI"
                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   />
                 </div>

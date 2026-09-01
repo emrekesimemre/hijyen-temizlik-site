@@ -1,21 +1,14 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://hijyenhalitemizleme.com'; // Change to actual domain if different
+  const baseUrl = "https://hijyenhalitemizleme.com";
 
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
+      lastModified: new Date("2026-09-01"),
+      changeFrequency: "monthly",
       priority: 1,
     },
-    // If you add sub-pages later (like /hizmetler, /iletisim), add them here:
-    // {
-    //   url: `${baseUrl}/hizmetler`,
-    //   lastModified: new Date(),
-    //   changeFrequency: 'monthly',
-    //   priority: 0.8,
-    // },
   ];
 }

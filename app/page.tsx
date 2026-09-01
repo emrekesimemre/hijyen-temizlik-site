@@ -3,6 +3,7 @@
 import {
   AnimatePresence,
   motion,
+  useInView,
   useScroll,
   useTransform,
   type Variants,
@@ -11,6 +12,8 @@ import {
   CalendarDays,
   Camera,
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   ClipboardList,
   Droplets,
   MapPin,
@@ -26,7 +29,6 @@ import {
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
-// --- TİPLER VE VERİLER (DATA) ---
 interface Service {
   title: string;
   description: string;
@@ -179,13 +181,46 @@ const NAV_LINKS = [
   { name: "Müşteri Yorumları", href: "#yorumlar" },
 ];
 
+const FAQ_ITEMS = [
+  {
+    question: "Halı yıkama fiyatları ne kadar?",
+    answer:
+      "Halı yıkama hizmetimiz m² başına 80₺'den başlamaktadır. Kilim, yün halı, bambu ve ipek halılar için farklı fiyatlar uygulanmaktadır. Güncel fiyat listesini görmek için menüden Fiyatlarımız butonuna tıklayabilirsiniz.",
+  },
+  {
+    question: "Ahlat'a servis yapıyor musunuz?",
+    answer:
+      "Evet! Ahlat'a her Salı, Perşembe ve Cumartesi günleri ücretsiz servis hizmeti sunmaktayız. Adilcevaz ilçesi için ise her gün servis imkânımız bulunmaktadır.",
+  },
+  {
+    question: "Halılarım ne kadar sürede yıkanıp teslim edilir?",
+    answer:
+      "Halılarınız teslim alındıktan sonra genellikle 1-2 iş günü içinde yıkanıp teslim edilmektedir. Sürecin her aşamasında (teslim alma, net fiyatlandırma ve yola çıkma) SMS ile bilgilendirilirsiniz.",
+  },
+  {
+    question: "Ödeme yöntemleri neler?",
+    answer:
+      "Kapıda nakit veya kredi kartı ile ödeme kabul edilmektedir. Ön ödeme talep edilmemektedir.",
+  },
+  {
+    question: "Koltuk yıkama yerinde mi yapılıyor?",
+    answer:
+      "Evet, koltuk yıkama hizmetimiz evinizde, koltuklarınızı yerinden kaldırmadan yapılmaktadır. Sanayi tipi vakum makineleriyle derin temizlik sağlanır.",
+  },
+  {
+    question: "Hangi ürünleri yıkayabiliyorsunuz?",
+    answer:
+      "Halı, kilim, yün halı, bambu halı, ipek halı, koltuk takımı, köşe takımı, yorgan, battaniye, stor perde, tül perde, yatak, baza ve araç koltuğu yıkama hizmetleri sunmaktayız.",
+  },
+];
+
 const FEATURES: string[] = [
   "Ücretsiz Servis İmkanı",
   "Akıllı SMS Bilgilendirme",
   "Anti-Bakteriyel Şampuanlar",
   "Kapalı Alan Kurutma",
   "Kapıda Nakit/Kredi Kartı Ödeme",
-  "%100 Memnuniyet Garantisi",
+  "Hijyenik Ambalajlama",
 ];
 
 const GALLERY_IMAGES = [
@@ -196,6 +231,10 @@ const GALLERY_IMAGES = [
   "/about5.jpeg",
   "/about6.jpeg",
   "/about7.jpeg",
+  "/about8.jpeg",
+  "/about9.jpeg",
+  "/about10.jpeg",
+  "/about11.jpeg",
 ];
 
 const GALLERY_VIDEOS = [
@@ -204,9 +243,33 @@ const GALLERY_VIDEOS = [
   "/about-vd3.mp4",
   "/about-vd4.mp4",
   "/about-vd5.mp4",
+  "/about-vd6.mp4",
+  "/about-vd7.mp4",
 ];
 
-// --- ANİMASYON AYARLARI (FRAMER MOTION) ---
+const GALLERY_ITEMS = [
+  ...GALLERY_VIDEOS.map((url) => ({ type: "video" as const, url })),
+  ...GALLERY_IMAGES.map((url) => ({ type: "image" as const, url })),
+];
+
+const STATS = [
+  { value: 5000, suffix: "+", label: "Memnun Aile", decimal: false },
+  { value: 8, suffix: "+ Yıl", label: "Hizmet Deneyimi", decimal: false },
+  { value: 49, suffix: "★", label: "Ortalama Puan", decimal: true },
+  { value: 2, suffix: " İlçe", label: "Servis Bölgesi", decimal: false },
+];
+
+const MARQUEE_ITEMS = [
+  "Ücretsiz Servis",
+  "Anti-Bakteriyel Şampuan",
+  "SMS Bilgilendirme",
+  "Kapalı Alan Kurutma",
+  "Kapıda Nakit/Kredi Kartı",
+  "Hijyenik Ambalaj",
+  "Endüstriyel Makineler",
+  "Ekspres Teslimat",
+];
+
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
@@ -220,7 +283,6 @@ const staggerContainer: Variants = {
   },
 };
 
-// Kendi Instagram İkonumuz (Lucide marka ikonlarını kaldırdığı için)
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -238,45 +300,88 @@ const InstagramIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+function AnimatedCounter({
+  end,
+  suffix,
+  decimal,
+}: {
+  end: number;
+  suffix: string;
+  decimal: boolean;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+    const duration = 2000;
+    const fps = 60;
+    const totalSteps = (duration / 1000) * fps;
+    const increment = end / totalSteps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current = Math.min(current + increment, end);
+      setCount(Math.floor(current));
+      if (current >= end) clearInterval(timer);
+    }, duration / totalSteps);
+    return () => clearInterval(timer);
+  }, [isInView, end]);
+
+  const display = decimal
+    ? (count / 10).toFixed(1)
+    : count.toLocaleString("tr-TR");
+
+  return (
+    <span ref={ref}>
+      {display}
+      {suffix}
+    </span>
+  );
+}
+
 export default function Home() {
-  // Parallax için referans ve kaydırma ayarları
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  // Arka plan görseli sayfa kaydıkça Y ekseninde %50'ye kadar aşağı kaysın
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
-  // Floating buton state'i
   const [showFloatingButton, setShowFloatingButton] = useState(false);
-
-  // YENİ: Modal, Form ve Tip State'leri
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<{
-    type: "video" | "image";
-    url: string;
-  } | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [selectedMediaIdx, setSelectedMediaIdx] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"hali" | "koltuk">("hali");
-  const [modalType, setModalType] = useState("randevu"); // 'randevu' veya 'fiyat'
+  const [modalType, setModalType] = useState("randevu");
   const [formData, setFormData] = useState({
     name: "",
     location: "Adilcevaz",
     service: "Halı Yıkama",
-    amount: "", // Fiyat tahmini için metrekare/adet bilgisi
+    amount: "",
+    address: "",
   });
 
-  // YENİ: Hangi butona basıldığına göre değişen akıllı mesaj yapısı
+  const navigateMedia = (direction: 1 | -1) => {
+    setSelectedMediaIdx((prev) => {
+      if (prev === null) return null;
+      const next = prev + direction;
+      if (next < 0) return GALLERY_ITEMS.length - 1;
+      if (next >= GALLERY_ITEMS.length) return 0;
+      return next;
+    });
+  };
+
   const handleWhatsAppSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     let message = "";
     if (modalType === "randevu") {
-      message = `Merhaba, ben ${formData.name}. ${formData.location} bölgesinden ${formData.service} hizmeti için randevu oluşturmak istiyorum.`;
+      message = `Merhaba, ben ${formData.name}. ${formData.location} bölgesinden ${formData.service} hizmeti için randevu oluşturmak istiyorum.${formData.address ? ` Adresim: ${formData.address}. Bu adresten halılarımın alınmasını istiyorum.` : ""}`;
     } else {
-      message = `Merhaba, ben ${formData.name}. ${formData.service} hizmetiniz için güncel fiyat listenizi öğrenebilir miyim? ${formData.amount ? `(Tahmini miktar: ${formData.amount})` : ""}`;
+      message = `Merhaba, ben ${formData.name}. ${formData.service} hizmetiniz için güncel fiyat listenizi öğrenebilir miyim?${formData.amount ? ` (Tahmini miktar: ${formData.amount})` : ""}`;
     }
 
     const encodedMessage = encodeURIComponent(message);
@@ -289,85 +394,41 @@ export default function Home() {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Sayfa 400px'den fazla kaydırıldıysa butonu göster
-      if (window.scrollY > 400) {
-        setShowFloatingButton(true);
-      } else {
-        setShowFloatingButton(false);
-      }
+      setShowFloatingButton(window.scrollY > 400);
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: "Hijyen Halı Temizleme",
-    description:
-      "Bitlis ili Adilcevaz ve Ahlat'ta profesyonel halı, koltuk, yorgan ve perde yıkama hizmetleri. Ücretsiz servis ve %100 memnuniyet garantisi.",
-    image: "https://hijyenhalitemizleme.com/logo.jpeg",
-    "@id": "https://hijyenhalitemizleme.com",
-    url: "https://hijyenhalitemizleme.com",
-    telephone: CONTACT_INFO.phoneRaw,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Alacaatlı Mah. Toki Cd. No: 18/B",
-      addressLocality: "Adilcevaz",
-      addressRegion: "Bitlis",
-      postalCode: "13500",
-      addressCountry: "TR",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 38.8021,
-      longitude: 42.7303,
-    },
-    areaServed: [
-      { "@type": "City", name: "Adilcevaz" },
-      { "@type": "City", name: "Ahlat" },
-      { "@type": "AdministrativeArea", name: "Bitlis" },
-    ],
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-      ],
-      opens: "08:00",
-      closes: "20:00",
-    },
-    priceRange: "₺₺",
-    sameAs: [
-      `https://instagram.com/${CONTACT_INFO.instagram.replace("@", "")}`,
-    ],
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedMediaIdx === null) return;
+      if (e.key === "ArrowLeft") navigateMedia(-1);
+      if (e.key === "ArrowRight") navigateMedia(1);
+      if (e.key === "Escape") setSelectedMediaIdx(null);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedMediaIdx]);
+
+  const currentMedia =
+    selectedMediaIdx !== null ? GALLERY_ITEMS[selectedMediaIdx] : null;
+
+  const scrollTo = (href: string) => {
+    const id = href.replace("#", "");
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <div className="min-h-screen bg-white font-sans selection:bg-blue-200">
-      {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      {/* 1. NAVBAR / HEADER (PREMIUM VERSION) */}
+      {/* NAVBAR */}
       <header className="fixed w-full top-0 z-50 bg-white border-b border-slate-100 shadow-sm transition-all duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-24 max-w-7xl mx-auto xl:px-4">
-            {/* Logo Alanı (shrink-0 ile sıkışmasını engelliyoruz) */}
             <div
               className="flex items-center h-full py-3 shrink-0 z-50 relative min-w-[150px] mr-4 xl:mr-10 cursor-pointer"
               onClick={() => {
-                window.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
             >
               <Image
@@ -379,12 +440,13 @@ export default function Home() {
                 priority
               />
             </div>
-            {/* Desktop Menü Linkleri (Premium Tipografi: Küçük, Büyük Harf ve Geniş Aralık) */}
+
             <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 flex-1 justify-center">
               {NAV_LINKS.map((link, index) => (
                 <a
                   key={index}
                   href={link.href}
+                  onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
                   className="text-[12px] font-bold tracking-[0.15em] uppercase text-slate-500 hover:text-blue-600 transition-colors whitespace-nowrap"
                 >
                   {link.name}
@@ -401,7 +463,7 @@ export default function Home() {
                 FİYATLARIMIZ
               </button>
             </nav>
-            {/* İletişim Butonları (Desktop) */}
+
             <div className="hidden lg:flex items-center gap-5 shrink-0 ml-auto">
               <div className="flex items-center gap-1.5 text-slate-800 font-bold text-base whitespace-nowrap">
                 <Phone className="w-4 h-4 text-blue-600" />
@@ -424,7 +486,7 @@ export default function Home() {
                 Hızlı Randevu
               </button>
             </div>
-            {/* Mobil Hamburger Butonu */}
+
             <button
               className="lg:hidden z-50 relative p-2 text-slate-700 outline-none focus:outline-none"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -437,7 +499,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        {/* Mobil Dropdown Menü (Framer Motion Animasyonlu) */}
+
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -447,31 +509,28 @@ export default function Home() {
               className="lg:hidden absolute top-24 left-0 w-full bg-white border-t border-slate-100 shadow-xl overflow-hidden"
             >
               <div className="flex flex-col px-4 py-6 gap-4">
-                {/* 1. Normal Nav Linkleri (Ana Sayfa silinmiş haliyle gelecek) */}
                 {NAV_LINKS.map((link, index) => (
                   <a
                     key={index}
                     href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); scrollTo(link.href); }}
                     className="text-lg font-medium text-slate-700 py-2 border-b border-slate-50 outline-none focus:outline-none"
                   >
                     {link.name}
                   </a>
                 ))}
 
-                {/* 2. İŞTE EKSİK OLAN KISIM: Fiyatlarımız Butonu (Mobil) */}
                 <button
                   onClick={() => {
-                    setIsMobileMenuOpen(false); // 1. Önce mobil menüyü kapat
-                    setModalType("fiyat"); // 2. Fiyat listesini hazırla
-                    setIsModalOpen(true); // 3. Modalı aç
+                    setIsMobileMenuOpen(false);
+                    setModalType("fiyat");
+                    setIsModalOpen(true);
                   }}
                   className="text-lg font-medium text-slate-700 py-2 border-b border-slate-50 outline-none focus:outline-none text-left"
                 >
                   Fiyatlarımız
                 </button>
 
-                {/* 3. İletişim ve Hızlı Randevu Butonları */}
                 <div className="flex flex-col gap-4 mt-4">
                   <a
                     href={`tel:${CONTACT_INFO.phoneRaw}`}
@@ -498,12 +557,11 @@ export default function Home() {
         </AnimatePresence>
       </header>
 
-      {/* 2. HERO SECTION */}
+      {/* HERO */}
       <section
         ref={heroRef}
         className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#1a233a]"
       >
-        {/* Parallax Efektli Arka Plan Görseli ve Overlay */}
         <motion.div
           style={{ y: backgroundY }}
           className="absolute inset-0 z-0 origin-top"
@@ -517,7 +575,6 @@ export default function Home() {
           />
         </motion.div>
 
-        {/* Sabit Gradient Overlay (Sol taraf yazılar için %85, orta kısım görsel için %30 şeffaflık) */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#1a233a]/85 via-[#1a233a]/30 to-transparent z-0"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -527,29 +584,29 @@ export default function Home() {
             variants={staggerContainer}
             className="max-w-3xl"
           >
-            {/* 1. ÜST ROZET (Yeni Güven Vurgusu) */}
             <motion.div
               variants={fadeInUp}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 text-slate-300 border border-slate-600/50 backdrop-blur-md mb-6 shadow-sm"
             >
               <Sparkles className="w-4 h-4 text-blue-400" />
               <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-200">
-                Adilcevaz ve Ahlat’ın en çok tercih edilen halı yıkama fabrikası
+                Adilcevaz ve Ahlat&apos;ın en çok tercih edilen halı yıkama
+                fabrikası
               </span>
             </motion.div>
 
-            {/* 2. ANA BAŞLIK (SEO + Slogan) */}
             <motion.div variants={fadeInUp}>
               <h1 className="text-4xl md:text-6xl text-white mb-4 tracking-tight leading-[1.1] drop-shadow-lg">
                 <span className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-400">
-                  Temizlik
+                  &ldquo;Temizlik
                 </span>{" "}
                 <br />
-                <span className="font-light text-slate-200">Bizim İşimiz</span>
+                <span className="font-light text-slate-200">
+                  Bizim İşimiz&rdquo;
+                </span>
               </h1>
             </motion.div>
 
-            {/* 3. AÇIKLAMA METNİ */}
             <motion.p
               variants={fadeInUp}
               className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl leading-relaxed drop-shadow-md font-light"
@@ -557,6 +614,7 @@ export default function Home() {
               Özel şampuanlar ve tam otomatik makinelerimizle halılarınızı
               sadece yüzeysel değil, derinlemesine temizliyoruz.
               <strong className="text-white font-medium">
+                {" "}
                 Sevdikleriniz güvenle temas etsin.
               </strong>
             </motion.p>
@@ -565,7 +623,6 @@ export default function Home() {
               variants={fadeInUp}
               className="flex flex-col sm:flex-row gap-4 mt-4"
             >
-              {/* ANA BUTON - Lüks Beyaz */}
               <a
                 href={`tel:${CONTACT_INFO.phoneRaw}`}
                 className="bg-white hover:bg-slate-100 text-slate-900 px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 shadow-xl shadow-black/20"
@@ -574,7 +631,6 @@ export default function Home() {
                 Hemen Arayın
               </a>
 
-              {/* İKİNCİ BUTON - Premium Cam Efekti (Glassmorphism) */}
               <button
                 onClick={() => {
                   setModalType("fiyat");
@@ -587,10 +643,46 @@ export default function Home() {
               </button>
             </motion.div>
           </motion.div>
+
+          {/* Floating stat cards */}
+          <div className="hidden lg:flex flex-col gap-4 absolute right-8 xl:right-16 top-1/2 -translate-y-1/2">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4 flex items-center gap-3 shadow-xl"
+            >
+              <span className="text-2xl">⭐</span>
+              <div>
+                <div className="text-white font-extrabold text-xl leading-none">
+                  4.9
+                </div>
+                <div className="text-slate-300 text-xs font-medium mt-0.5">
+                  Müşteri Puanı
+                </div>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-5 py-4 flex items-center gap-3 shadow-xl"
+            >
+              <span className="text-2xl">🏠</span>
+              <div>
+                <div className="text-white font-extrabold text-xl leading-none">
+                  5000+
+                </div>
+                <div className="text-slate-300 text-xs font-medium mt-0.5">
+                  Memnun Aile
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* 3. ÖZEL BİLDİRİM (AHLAT SERVİSİ) */}
+      {/* AHLAT SERVİS BİLDİRİMİ */}
       <section className="relative -mt-10 z-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -598,7 +690,6 @@ export default function Home() {
           viewport={{ once: true }}
           className="bg-white rounded-2xl shadow-2xl shadow-emerald-900/5 border border-slate-100 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
         >
-          {/* Zarif arka plan parlaması (Glow) */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="flex items-center gap-5 relative z-10">
@@ -607,7 +698,7 @@ export default function Home() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-800 mb-1 tracking-tight">
-                Müjde! Ahlat Servisimiz Başladı
+                Müjde! Ahlat Servisimiz Başladı!
               </h3>
               <p className="text-slate-500 font-medium text-sm md:text-base">
                 Her <span className="text-emerald-600 font-semibold">Salı</span>
@@ -617,7 +708,7 @@ export default function Home() {
                 <span className="text-emerald-600 font-semibold">
                   Cumartesi
                 </span>{" "}
-                günleri Ahlat'a{" "}
+                günleri Ahlat&apos;a{" "}
                 <span className="underline decoration-emerald-500/50 decoration-2 underline-offset-4">
                   ücretsiz servisimiz
                 </span>{" "}
@@ -637,7 +728,36 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* 4. HİZMETLERİMİZ */}
+      {/* STATS */}
+      <section className="bg-slate-900 py-16 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {STATS.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-4xl md:text-5xl font-extrabold text-white mb-2">
+                  <AnimatedCounter
+                    end={stat.value}
+                    suffix={stat.suffix}
+                    decimal={stat.decimal}
+                  />
+                </div>
+                <div className="text-slate-400 font-medium text-sm uppercase tracking-wider">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* HİZMETLERİMİZ */}
       <section id="hizmetler" className="py-32 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-20">
@@ -678,14 +798,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. NEDEN BİZ? (Premium Görsel ve SMS Vurgusu) */}
+      {/* MARQUEE ŞERİDİ */}
+      <div className="relative overflow-hidden bg-blue-600 py-4">
+        <div className="flex animate-marquee whitespace-nowrap">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, idx) => (
+            <span
+              key={idx}
+              className="inline-flex items-center gap-3 mx-8 text-white font-semibold text-sm tracking-wide"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-300 inline-block shrink-0" />
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* HAKKIMIZDA */}
       <section
         id="hakkimizda"
         className="py-24 bg-white border-y border-slate-100 overflow-hidden"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            {/* Sol Taraf - Premium Görsel (Videolu & Galerili) */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -693,13 +827,13 @@ export default function Home() {
               className="lg:w-1/2 relative w-full px-4 sm:px-0"
             >
               <div className="aspect-[4/5] w-full max-w-md mx-auto relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 group bg-slate-100">
-                <img
+                <Image
                   src="/about1.jpeg"
                   alt="Hijyen Halı Temizleme Fabrikası"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
 
-                {/* Karanlık Overlay & Cam Efektli Buton (Daha belirginleştirildi) */}
                 <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center transition-all duration-300">
                   <button
                     onClick={() => setIsGalleryOpen(true)}
@@ -715,23 +849,21 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Memnuniyet Badge (Mobil uyumlu hale getirildi, taşma sorunu çözüldü) */}
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:-right-4 md:right-4 bg-white p-4 sm:p-6 rounded-2xl shadow-xl flex items-center gap-3 sm:gap-4 border border-slate-50 w-[85%] sm:w-auto z-10">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-yellow-50 rounded-xl flex items-center justify-center shrink-0">
                   <span className="text-xl sm:text-2xl">⭐</span>
                 </div>
                 <div>
                   <div className="font-extrabold text-xl sm:text-2xl text-slate-900 leading-none mb-1">
-                    %100
+                    5000+
                   </div>
                   <div className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-widest">
-                    Müşteri Memnuniyeti
+                    Memnun Aile
                   </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Sağ Taraf - İçerik ve SMS Vurgusu */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -766,18 +898,121 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+
+              {/* Inline galeri grid */}
+              <div className="mt-10">
+                <div className="grid grid-cols-4 gap-2">
+                  {GALLERY_IMAGES.slice(0, 4).map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setSelectedMediaIdx(GALLERY_VIDEOS.length + idx);
+                      }}
+                      className="aspect-square relative rounded-xl overflow-hidden group"
+                    >
+                      <Image
+                        src={img}
+                        alt={`Hijyen Halı Temizleme Fabrikası - Görsel ${idx + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 25vw, 12vw"
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-all duration-300 rounded-xl" />
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setIsGalleryOpen(true)}
+                  className="mt-3 w-full text-center text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center justify-center gap-2 py-3 border border-blue-100 rounded-xl hover:bg-blue-50 transition-all"
+                >
+                  <Camera className="w-4 h-4" />
+                  Tüm Fotoğrafları Gör
+                </button>
+              </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 5.5 MÜŞTERİ YORUMLARI (Sosyal Kanıt) */}
-      {/* 5.5 MÜŞTERİ YORUMLARI (Sosyal Kanıt) */}
+      {/* SSS */}
+      <section id="sss" className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-5 tracking-tight">
+              Sık Sorulan Sorular
+            </h2>
+            <p className="text-lg text-slate-500 font-light leading-relaxed">
+              Aklınıza takılan soruların cevaplarını burada bulabilirsiniz.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {FAQ_ITEMS.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.07 }}
+                className="border border-slate-200 rounded-2xl overflow-hidden"
+              >
+                <button
+                  onClick={() =>
+                    setOpenFaq(openFaq === index ? null : index)
+                  }
+                  className="w-full flex items-center justify-between px-6 py-5 text-left bg-white hover:bg-slate-50 transition-colors"
+                >
+                  <span className="font-semibold text-slate-800 pr-4">
+                    {item.question}
+                  </span>
+                  <motion.span
+                    animate={{ rotate: openFaq === index ? 45 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="shrink-0 w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-lg leading-none"
+                  >
+                    +
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {openFaq === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="px-6 pb-5 text-slate-500 leading-relaxed font-light border-t border-slate-100 pt-4">
+                        {item.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <p className="text-slate-500 mb-4">
+              Başka sorunuz mu var?
+            </p>
+            <a
+              href={`tel:${CONTACT_INFO.phoneRaw}`}
+              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20"
+            >
+              <Phone className="w-5 h-5" />
+              Bizi Arayın
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* MÜŞTERİ YORUMLARI */}
       <section
         id="yorumlar"
         className="py-24 bg-slate-50 relative overflow-hidden"
       >
-        {/* Arka plan dekorasyonu */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] opacity-30 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-blue-100/50 to-transparent rounded-full blur-3xl"></div>
         </div>
@@ -806,12 +1041,10 @@ export default function Home() {
                 variants={fadeInUp}
                 className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 relative group hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
-                {/* Sol Üstteki Şık Tırnak İşareti */}
                 <div className="absolute -top-4 -left-4 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-serif shadow-lg shadow-blue-600/30 opacity-80 group-hover:opacity-100 transition-opacity">
-                  "
+                  &quot;
                 </div>
 
-                {/* Yıldızlar */}
                 <div className="flex items-center gap-1 mb-6">
                   {[...Array(review.rating)].map((_, i) => (
                     <Star
@@ -821,12 +1054,10 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* Yorum Metni */}
                 <p className="text-slate-600 leading-relaxed font-light mb-8 italic">
-                  "{review.comment}"
+                  &quot;{review.comment}&quot;
                 </p>
 
-                {/* Müşteri Bilgisi */}
                 <div className="flex items-center gap-4 mt-auto border-t border-slate-50 pt-6">
                   <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center font-bold text-slate-400 text-lg">
                     {review.name.charAt(0)}
@@ -842,7 +1073,6 @@ export default function Home() {
             ))}
           </motion.div>
 
-          {/* YENİ: DAHA FAZLA (INSTAGRAM) BUTONU */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -859,25 +1089,23 @@ export default function Home() {
                 <InstagramIcon className="w-5 h-5 text-white" />
               </div>
               <span className="font-bold text-slate-700 group-hover:text-slate-900 transition-colors">
-                Daha Fazlası Instagram'da
+                Daha Fazlası Instagram&apos;da
               </span>
             </a>
           </motion.div>
         </div>
       </section>
 
-      {/* 6. FOOTER & İLETİŞİM */}
+      {/* FOOTER */}
       <footer className="bg-slate-900 text-slate-300 pt-20 pb-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            {/* Marka (Resim logo yerine premium tipografi) */}
             <div className="col-span-1">
               <div className="flex items-center gap-4 mb-6">
-                {/* Beyaz arka planı şık bir rozete dönüştüren çerçeve */}
                 <div className="w-14 h-14 bg-white rounded-2xl p-1 shadow-lg shadow-blue-900/50 shrink-0 flex items-center justify-center overflow-hidden">
                   <Image
-                    src="/footer-logo.png" // Kullandığın görselin adını buraya gir
-                    alt="Hijyen Halı"
+                    src="/footer-logo.png"
+                    alt="Hijyen Halı Temizleme Fabrikası Logosu"
                     width={60}
                     height={60}
                     className="w-full h-full object-contain"
@@ -894,11 +1122,11 @@ export default function Home() {
               </div>
               <p className="text-slate-400 leading-relaxed mb-6">
                 Adilcevaz ve Ahlat bölgesinin en modern, en titiz halı yıkama
-                fabrikası. "Temizlik Bizim İşimiz" vizyonuyla hizmetinizdeyiz.
+                fabrikası. &quot;Temizlik Bizim İşimiz&quot; vizyonuyla
+                hizmetinizdeyiz.
               </p>
             </div>
 
-            {/* İletişim Bilgileri & YENİ INSTAGRAM ALANI */}
             <div className="col-span-1">
               <h4 className="text-white font-bold text-lg mb-6 uppercase tracking-wider">
                 İletişim Bilgileri
@@ -929,7 +1157,6 @@ export default function Home() {
                     </span>
                   </div>
                 </li>
-                {/* Vurgulu Instagram Linki */}
                 <li className="flex items-start gap-4 pt-2">
                   <div className="p-2 bg-gradient-to-tr from-yellow-400 via-red-500 to-fuchsia-600 rounded-lg shrink-0 shadow-lg">
                     <InstagramIcon className="w-5 h-5 text-white" />
@@ -951,8 +1178,28 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Çalışma Saatleri */}
             <div className="col-span-1">
+              <h4 className="text-white font-bold text-lg mb-6 uppercase tracking-wider">
+                Hızlı Bağlantılar
+              </h4>
+              <ul className="space-y-3 mb-8">
+                {[
+                  { label: "Hizmetlerimiz", href: "#hizmetler" },
+                  { label: "Hakkımızda", href: "#hakkimizda" },
+                  { label: "Müşteri Yorumları", href: "#yorumlar" },
+                  { label: "Sık Sorulan Sorular", href: "#sss" },
+                ].map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
+                      className="text-slate-400 hover:text-white transition-colors text-sm font-medium"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
               <h4 className="text-white font-bold text-lg mb-6 uppercase tracking-wider">
                 Çalışma & Servis Saatleri
               </h4>
@@ -999,7 +1246,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* MODAL / AÇILIR PENCERE ALANI */}
+      {/* FİYAT MODAL */}
       <AnimatePresence>
         {isModalOpen && modalType === "fiyat" && (
           <motion.div
@@ -1007,7 +1254,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-slate-900/60 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)} // Dışarı tıklayınca kapanma
+            onClick={() => setIsModalOpen(false)}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -1015,9 +1262,8 @@ export default function Home() {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
               className="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden"
-              onClick={(e) => e.stopPropagation()} // İçeri tıklayınca kapanmayı engelleme
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* MODAL HEADER */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
                 <div>
                   <h3 className="text-xl font-bold text-slate-800">
@@ -1035,7 +1281,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* SEKMELER (TABS) */}
               <div className="flex p-4 gap-2 bg-white border-b border-slate-100 shrink-0">
                 <button
                   onClick={() => setActiveTab("hali")}
@@ -1059,7 +1304,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* LİSTE İÇERİĞİ (SCROLL EDİLEBİLİR ALAN) */}
               <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50/30 custom-scrollbar">
                 <div className="grid grid-cols-1 gap-3">
                   {PRICING_DATA[activeTab].map((item, idx) => (
@@ -1086,10 +1330,9 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* MODAL FOOTER (Hemen Ara Butonu) */}
               <div className="p-4 md:p-6 border-t border-slate-100 bg-white shrink-0">
                 <a
-                  href={`tel:${CONTACT_INFO.phoneRaw}`} // Kendi telefon sabitine göre ayarla
+                  href={`tel:${CONTACT_INFO.phoneRaw}`}
                   className="w-full bg-slate-900 hover:bg-slate-800 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-lg shadow-slate-900/20"
                 >
                   <Phone className="w-5 h-5" />
@@ -1100,8 +1343,8 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* RANDEVU MODAL (POPUP) */}
-      {/* 2. MODAL: SADECE RANDEVU FORMU İÇİN */}
+
+      {/* RANDEVU MODAL */}
       <AnimatePresence>
         {isModalOpen && modalType === "randevu" && (
           <motion.div
@@ -1118,7 +1361,6 @@ export default function Home() {
               className="bg-white w-full max-w-md rounded-3xl shadow-2xl flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* RANDEVU MODAL HEADER */}
               <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100 bg-slate-50/50">
                 <div className="flex items-center gap-2">
                   <CalendarDays className="w-5 h-5 text-emerald-500" />
@@ -1134,8 +1376,7 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* AZ ÖNCE DÜZENLEDİĞİMİZ TEMİZ FORM */}
-              <form onSubmit={handleWhatsAppSubmit} className="p-6 space-y-5">
+              <form onSubmit={handleWhatsAppSubmit} className="p-6 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
                     Adınız Soyadınız
@@ -1147,7 +1388,7 @@ export default function Home() {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    placeholder="Örn: Tarık POLATÇI"
+                    placeholder="Örn: Yusuf POLATCI"
                     className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
                   />
                 </div>
@@ -1188,6 +1429,24 @@ export default function Home() {
                   </div>
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Adresiniz{" "}
+                    <span className="text-slate-400 font-normal">
+                      (isteğe bağlı)
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    placeholder="Örn: Cumhuriyet Mah. Atatürk Cad. No: 12"
+                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
+                  />
+                </div>
+
                 <button
                   type="submit"
                   className="w-full mt-2 text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors shadow-lg bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/30"
@@ -1201,7 +1460,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* GALERİ MODAL (POPUP) */}
+      {/* GALERİ MODAL */}
       <AnimatePresence>
         {isGalleryOpen && (
           <motion.div
@@ -1210,7 +1469,6 @@ export default function Home() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex flex-col"
           >
-            {/* KAPAT BUTONU (Sabit Sağ Üst) */}
             <button
               onClick={() => setIsGalleryOpen(false)}
               className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all z-10"
@@ -1218,19 +1476,15 @@ export default function Home() {
               <X className="w-6 h-6" />
             </button>
 
-            {/* SCROLL EDİLEBİLİR ALAN */}
             <div className="flex-1 overflow-y-auto w-full custom-scrollbar">
               <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-3 gap-4 p-4 md:p-8 pt-20 md:pt-24">
-                {/* 1. VİDEOLAR */}
                 {GALLERY_VIDEOS.map((vid, idx) => (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.1 }}
                     key={`vid-${idx}`}
-                    onClick={() =>
-                      setSelectedMedia({ type: "video", url: vid })
-                    }
+                    onClick={() => setSelectedMediaIdx(idx)}
                     className="aspect-square relative rounded-xl overflow-hidden bg-slate-800 shadow-lg cursor-pointer group"
                   >
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all z-10"></div>
@@ -1245,7 +1499,6 @@ export default function Home() {
                   </motion.div>
                 ))}
 
-                {/* 2. GÖRSELLER */}
                 {GALLERY_IMAGES.map((img, idx) => (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -1253,13 +1506,13 @@ export default function Home() {
                     transition={{ delay: (GALLERY_VIDEOS.length + idx) * 0.1 }}
                     key={`img-${idx}`}
                     onClick={() =>
-                      setSelectedMedia({ type: "image", url: img })
+                      setSelectedMediaIdx(GALLERY_VIDEOS.length + idx)
                     }
                     className="aspect-square relative rounded-xl overflow-hidden bg-slate-800 shadow-lg group cursor-pointer"
                   >
                     <Image
                       src={img}
-                      alt={`Galeri Görseli ${idx + 1}`}
+                      alt={`Hijyen Halı Temizleme Fabrikası - Galeri ${idx + 1}`}
                       fill
                       sizes="(max-width: 768px) 50vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -1272,34 +1525,60 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* MEDYA GÖSTERİCİ (TAM EKRAN) MODAL */}
+      {/* FULLSCREEN MEDYA GÖRÜNTÜLEYICI */}
       <AnimatePresence>
-        {selectedMedia && (
+        {currentMedia && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={() => setSelectedMedia(null)}
+            onClick={() => setSelectedMediaIdx(null)}
           >
-            {/* Kapat Butonu */}
             <button
-              onClick={() => setSelectedMedia(null)}
+              onClick={() => setSelectedMediaIdx(null)}
               className="absolute top-4 right-4 md:top-8 md:right-8 w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all z-[70]"
             >
               <X className="w-6 h-6" />
             </button>
 
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateMedia(-1);
+              }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all z-[70]"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateMedia(1);
+              }}
+              className="absolute right-4 md:right-24 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/20 hover:scale-105 transition-all z-[70]"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-400 text-sm z-[70]">
+              {selectedMediaIdx !== null ? selectedMediaIdx + 1 : 0} /{" "}
+              {GALLERY_ITEMS.length}
+            </div>
+
             <motion.div
+              key={selectedMediaIdx}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              {selectedMedia.type === "video" ? (
+              {currentMedia.type === "video" ? (
                 <video
-                  src={selectedMedia.url}
+                  src={currentMedia.url}
                   autoPlay
                   controls
                   playsInline
@@ -1308,8 +1587,8 @@ export default function Home() {
               ) : (
                 <div className="relative w-full h-full">
                   <Image
-                    src={selectedMedia.url}
-                    alt="Büyük Görsel"
+                    src={currentMedia.url}
+                    alt="Hijyen Halı Temizleme - Fabrika Görseli"
                     fill
                     className="object-contain"
                   />
@@ -1320,7 +1599,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* FLOATING WHATSAPP BUTTON */}
+      {/* FLOATING WHATSAPP */}
       <AnimatePresence>
         {showFloatingButton && (
           <motion.a
@@ -1335,7 +1614,6 @@ export default function Home() {
             className="fixed bottom-6 right-6 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl shadow-[#25D366]/40 flex items-center justify-center group"
           >
             <MessageCircle className="w-8 h-8" />
-            {/* Üzerine gelince çıkan minik tooltip */}
             <span className="absolute right-full mr-4 bg-slate-900 text-white text-sm font-medium py-2 px-4 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
               Bize Ulaşın
             </span>

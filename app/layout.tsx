@@ -119,8 +119,29 @@ const localBusinessJsonLd = {
   },
   areaServed: [
     { "@type": "City", name: "Adilcevaz" },
-    { "@type": "City", name: "Ahlat" },
+    {
+      "@type": "City",
+      name: "Ahlat",
+      containedInPlace: {
+        "@type": "AdministrativeArea",
+        name: "Bitlis",
+      },
+      geo: {
+        "@type": "GeoCoordinates",
+        latitude: 38.7544,
+        longitude: 42.4944,
+      },
+    },
     { "@type": "AdministrativeArea", name: "Bitlis" },
+    {
+      "@type": "GeoCircle",
+      geoMidpoint: {
+        "@type": "GeoCoordinates",
+        latitude: 38.7544,
+        longitude: 42.4944,
+      },
+      geoRadius: "15000",
+    },
   ],
   openingHoursSpecification: [
     {

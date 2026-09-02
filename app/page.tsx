@@ -27,6 +27,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 interface Service {
@@ -698,7 +699,12 @@ export default function Home() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-800 mb-1 tracking-tight">
-                Müjde! Ahlat Servisimiz Başladı!
+                <Link
+                  href="/ahlat-hali-yikama"
+                  className="hover:text-emerald-700 transition-colors"
+                >
+                  Müjde! Ahlat Servisimiz Başladı!
+                </Link>
               </h3>
               <p className="text-slate-500 font-medium text-sm md:text-base">
                 Her <span className="text-emerald-600 font-semibold">Salı</span>
@@ -716,15 +722,23 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              setModalType("randevu");
-              setIsModalOpen(true);
-            }}
-            className="shrink-0 w-full md:w-auto text-center bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl text-sm font-bold tracking-wide transition-all shadow-lg hover:shadow-slate-900/20 relative z-10"
-          >
-            Randevu Oluştur
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto relative z-10">
+            <Link
+              href="/ahlat-hali-yikama"
+              className="shrink-0 w-full md:w-auto text-center bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 px-8 py-3.5 rounded-xl text-sm font-bold tracking-wide transition-all"
+            >
+              Ahlat Halı Yıkama
+            </Link>
+            <button
+              onClick={() => {
+                setModalType("randevu");
+                setIsModalOpen(true);
+              }}
+              className="shrink-0 w-full md:w-auto text-center bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl text-sm font-bold tracking-wide transition-all shadow-lg hover:shadow-slate-900/20"
+            >
+              Randevu Oluştur
+            </button>
+          </div>
         </motion.div>
       </section>
 

@@ -109,7 +109,7 @@ const faqJsonLd = {
       name: "Ahlat halı yıkama fiyatları ne kadar?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ahlat halı yıkama hizmetimiz m² başına 80₺'den başlar. Kilim, yün, bambu ve ipek halılar ile yorgan ve koltuk için ayrı fiyat uygulanır. Güncel fiyat için 0555 063 13 14'ü arayabilirsiniz.",
+        text: "Ahlat halı yıkama hizmetimiz m² başına 90₺'den başlar. Kilim, yün, bambu ve ipek halılar ile yorgan ve koltuk için ayrı fiyat uygulanır. Güncel fiyat için 0555 063 13 14'ü arayabilirsiniz.",
       },
     },
     {
@@ -218,7 +218,7 @@ const FAQ_ITEMS = [
   {
     question: "Ahlat halı yıkama fiyatları ne kadar?",
     answer:
-      "Halı yıkama m² başına 80₺'den başlamaktadır. Kilim, yün, bambu ve ipek halılar için farklı fiyat uygulanır. Güncel liste için 0555 063 13 14'ü arayabilir ya da ana sayfamızdaki fiyat listesini inceleyebilirsiniz.",
+      "Halı yıkama m² başına 90₺'den başlamaktadır. Kilim, yün, bambu ve ipek halılar için farklı fiyat uygulanır. Güncel liste için 0555 063 13 14'ü arayabilir ya da ana sayfamızdaki fiyat listesini inceleyebilirsiniz.",
   },
   {
     question: "Halılarım ne kadar sürede teslim edilir?",

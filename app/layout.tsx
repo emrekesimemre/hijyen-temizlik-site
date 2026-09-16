@@ -184,7 +184,7 @@ const faqJsonLd = {
       name: "Halı yıkama fiyatları ne kadar?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Halı yıkama hizmetimiz m² başına 90₺'den başlamaktadır. Kilim, yün halı ve bambu halı için farklı fiyatlar uygulanmaktadır. Güncel fiyat listemiz için 0555 063 13 14 numaralı hattımızı arayabilirsiniz.",
+        text: "Halı yıkama hizmetimiz m² başına 100₺'den başlamaktadır. Kilim, yün halı ve bambu halı için farklı fiyatlar uygulanmaktadır. Güncel fiyat listemiz için 0555 063 13 14 numaralı hattımızı arayabilirsiniz.",
       },
     },
     {

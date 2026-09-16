@@ -46,83 +46,83 @@ const CONTACT_INFO = {
 
 const PRICING_DATA = {
   hali: [
-    { name: "Halı Yıkama", price: "90.0₺", unit: "M2" },
-    { name: "Kilim-Savan Yıkama", price: "100.0₺", unit: "M2" },
-    { name: "Yün Halı Yıkama", price: "100.0₺", unit: "M2" },
-    { name: "Battaniye Yıkama", price: "400.0₺", unit: "ADET" },
-    { name: "Elyaf Yorgan Yıkama", price: "600.0₺", unit: "ADET" },
-    { name: "Yün Yorgan Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Yorgan Yıkama (Bebek)", price: "500.0₺", unit: "ADET" },
-    { name: "Perde Yıkama", price: "100.0₺", unit: "M2" },
-    { name: "Tül Perde Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Tek Halı Yıkama", price: "120.0₺", unit: "M2" },
-    { name: "Bambu Halı Yıkama", price: "120.0₺", unit: "M2" },
-    { name: "İpek Halı Yıkama", price: "150.0₺", unit: "M2" },
-    { name: "Yastık Yıkama", price: "200.0₺", unit: "ADET" },
-    { name: "Yün Yıkama", price: "100.0₺", unit: "KİLO" },
-    { name: "Elde Yıkama", price: "150.0₺", unit: "M2" },
-    { name: "(Çok Kirli) Halı Yıkama", price: "120.0₺", unit: "M2" },
-    { name: "Sünger Yatak Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Yerinde Yıkama", price: "100.0₺", unit: "M2" },
-    { name: "Ayıcık Yıkama", price: "500.0₺", unit: "ADET" },
+    { name: "Halı Yıkama", price: "100₺", unit: "M2" },
+    { name: "Kilim-Savan Yıkama", price: "100₺", unit: "M2" },
+    { name: "Yün Halı Yıkama", price: "100₺", unit: "M2" },
+    { name: "Battaniye Yıkama", price: "400₺", unit: "ADET" },
+    { name: "Elyaf Yorgan Yıkama", price: "600₺", unit: "ADET" },
+    { name: "Yün Yorgan Yıkama", price: "750₺", unit: "ADET" },
+    { name: "Yorgan Yıkama (Bebek)", price: "500₺", unit: "ADET" },
+    { name: "Perde Yıkama", price: "100₺", unit: "M2" },
+    { name: "Tül Perde Yıkama", price: "750₺", unit: "ADET" },
+    { name: "Tek Halı Yıkama", price: "120₺", unit: "M2" },
+    { name: "Bambu Halı Yıkama", price: "120₺", unit: "M2" },
+    { name: "İpek Halı Yıkama", price: "150₺", unit: "M2" },
+    { name: "Yastık Yıkama", price: "200₺", unit: "ADET" },
+    { name: "Yün Yıkama", price: "100₺", unit: "KİLO" },
+    { name: "Elde Yıkama", price: "150₺", unit: "M2" },
+    { name: "(Çok Kirli) Halı Yıkama", price: "120₺", unit: "M2" },
+    { name: "Sünger Yatak Yıkama", price: "750₺", unit: "ADET" },
+    { name: "Yerinde Yıkama", price: "100₺", unit: "M2" },
+    { name: "Ayıcık Yıkama", price: "500₺", unit: "ADET" },
   ],
   koltuk: [
-    { name: "Koltuk Takımı Yıkama", price: "2500.0₺", unit: "ADET" },
-    { name: "Köşe Takımı Yıkama", price: "2000.0₺", unit: "ADET" },
-    { name: "Koltuk Takımı Yıkama (Yastıklı)", price: "3000.0₺", unit: "ADET" },
+    { name: "Koltuk Takımı Yıkama", price: "2500₺", unit: "ADET" },
+    { name: "Köşe Takımı Yıkama", price: "2000₺", unit: "ADET" },
+    { name: "Koltuk Takımı Yıkama (Yastıklı)", price: "3000₺", unit: "ADET" },
     {
       name: "Koltuk Takımı Yıkama (Çekme Yataklı)",
-      price: "3000.0₺",
+      price: "3000₺",
       unit: "ADET",
     },
     {
       name: "Koltuk Takımı Yıkama (Yastıklı ve Çekme Yataklı)",
-      price: "3000.0₺",
+      price: "3000₺",
       unit: "ADET",
     },
-    { name: "Kanepe Yıkama", price: "1000.0₺", unit: "ADET" },
-    { name: "Tekli Koltuk Yıkama", price: "700.0₺", unit: "ADET" },
-    { name: "Orta Puf Koltuk Yıkama", price: "500.0₺", unit: "ADET" },
-    { name: "Baza (Çift Kişilik) Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Baza (Tek Kişilik) Yıkama", price: "500.0₺", unit: "ADET" },
-    { name: "Yatak (Bebek) Yıkama", price: "750.0₺", unit: "ADET" },
-    { name: "Yatak (Tek Kişilik) Yıkama", price: "1500.0₺", unit: "ADET" },
-    { name: "Sandalye Yıkama", price: "200.0₺", unit: "ADET" },
-    { name: "Sandalye (Küçük) Yıkama", price: "150.0₺", unit: "ADET" },
+    { name: "Kanepe Yıkama", price: "1000₺", unit: "ADET" },
+    { name: "Tekli Koltuk Yıkama", price: "700₺", unit: "ADET" },
+    { name: "Orta Puf Koltuk Yıkama", price: "500₺", unit: "ADET" },
+    { name: "Baza (Çift Kişilik) Yıkama", price: "750₺", unit: "ADET" },
+    { name: "Baza (Tek Kişilik) Yıkama", price: "500₺", unit: "ADET" },
+    { name: "Yatak (Bebek) Yıkama", price: "750₺", unit: "ADET" },
+    { name: "Yatak (Tek Kişilik) Yıkama", price: "1500₺", unit: "ADET" },
+    { name: "Sandalye Yıkama", price: "200₺", unit: "ADET" },
+    { name: "Sandalye (Küçük) Yıkama", price: "150₺", unit: "ADET" },
     {
       name: "Tek Kişilik Yatak (Tek Yüzü) Yıkama",
-      price: "1000.0₺",
+      price: "1000₺",
       unit: "ADET",
     },
     {
       name: "Çift Kişilik Yatak (Tek Yüzü) Yıkama",
-      price: "1500.0₺",
+      price: "1500₺",
       unit: "ADET",
     },
     {
       name: "Yatak Kılıfı (Çift Kişilik) Yıkama",
-      price: "1000.0₺",
+      price: "1000₺",
       unit: "ADET",
     },
     {
       name: "Yatak Başlığı (Çift Kişilik) Yıkama",
-      price: "1000.0₺",
+      price: "1000₺",
       unit: "ADET",
     },
     {
       name: "Yatak Başlığı (Tek Kişilik) Yıkama",
-      price: "750.0₺",
+      price: "750₺",
       unit: "ADET",
     },
-    { name: "Yatak (Çift Kişilik) Yıkama", price: "2000.0₺", unit: "ADET" },
+    { name: "Yatak (Çift Kişilik) Yıkama", price: "2000₺", unit: "ADET" },
     {
       name: "Yatak Kılıfı (Tek Kişilik) Yıkama",
-      price: "750.0₺",
+      price: "750₺",
       unit: "ADET",
     },
-    { name: "Kanepe Yıkama (Çekme Yataklı)", price: "1200.0₺", unit: "ADET" },
-    { name: "Araç Koltuk Yıkama", price: "2500.0₺", unit: "ADET" },
-    { name: "Oto Kuaför", price: "6000.0₺", unit: "ADET" },
+    { name: "Kanepe Yıkama (Çekme Yataklı)", price: "1200₺", unit: "ADET" },
+    { name: "Araç Koltuk Yıkama", price: "2500₺", unit: "ADET" },
+    { name: "Oto Kuaför", price: "6000₺", unit: "ADET" },
   ],
 };
 
@@ -187,7 +187,7 @@ const FAQ_ITEMS = [
   {
     question: "Halı yıkama fiyatları ne kadar?",
     answer:
-      "Halı yıkama hizmetimiz m² başına 90₺'den başlamaktadır. Kilim, yün halı, bambu ve ipek halılar için farklı fiyatlar uygulanmaktadır. Güncel fiyat listesini görmek için menüden Fiyatlarımız butonuna tıklayabilirsiniz.",
+      "Halı yıkama hizmetimiz m² başına 100₺'den başlamaktadır. Kilim, yün halı, bambu ve ipek halılar için farklı fiyatlar uygulanmaktadır. Güncel fiyat listesini görmek için menüden Fiyatlarımız butonuna tıklayabilirsiniz.",
   },
   {
     question: "Ahlat'a servis yapıyor musunuz?",
@@ -448,7 +448,10 @@ export default function Home() {
                 <a
                   key={index}
                   href={link.href}
-                  onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollTo(link.href);
+                  }}
                   className="text-[12px] font-bold tracking-[0.15em] uppercase text-slate-500 hover:text-blue-600 transition-colors whitespace-nowrap"
                 >
                   {link.name}
@@ -515,7 +518,11 @@ export default function Home() {
                   <a
                     key={index}
                     href={link.href}
-                    onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); scrollTo(link.href); }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMobileMenuOpen(false);
+                      scrollTo(link.href);
+                    }}
                     className="text-lg font-medium text-slate-700 py-2 border-b border-slate-50 outline-none focus:outline-none"
                   >
                     {link.name}
@@ -972,9 +979,7 @@ export default function Home() {
                 className="border border-slate-200 rounded-2xl overflow-hidden"
               >
                 <button
-                  onClick={() =>
-                    setOpenFaq(openFaq === index ? null : index)
-                  }
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   className="w-full flex items-center justify-between px-6 py-5 text-left bg-white hover:bg-slate-50 transition-colors"
                 >
                   <span className="font-semibold text-slate-800 pr-4">
@@ -1009,9 +1014,7 @@ export default function Home() {
           </div>
 
           <div className="mt-10 text-center">
-            <p className="text-slate-500 mb-4">
-              Başka sorunuz mu var?
-            </p>
+            <p className="text-slate-500 mb-4">Başka sorunuz mu var?</p>
             <a
               href={`tel:${CONTACT_INFO.phoneRaw}`}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20"
@@ -1207,7 +1210,10 @@ export default function Home() {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        scrollTo(link.href);
+                      }}
                       className="text-slate-400 hover:text-white transition-colors text-sm font-medium"
                     >
                       {link.label}

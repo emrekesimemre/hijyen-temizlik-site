@@ -109,7 +109,7 @@ const faqJsonLd = {
       name: "Ahlat halı yıkama fiyatları ne kadar?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ahlat halı yıkama hizmetimiz m² başına 90₺'den başlar. Kilim, yün, bambu ve ipek halılar ile yorgan ve koltuk için ayrı fiyat uygulanır. Güncel fiyat için 0555 063 13 14'ü arayabilirsiniz.",
+        text: "Ahlat halı yıkama hizmetimiz m² başına 100₺'den başlar. Kilim, yün, bambu ve ipek halılar ile yorgan ve koltuk için ayrı fiyat uygulanır. Güncel fiyat için 0555 063 13 14'ü arayabilirsiniz.",
       },
     },
     {
@@ -218,7 +218,7 @@ const FAQ_ITEMS = [
   {
     question: "Ahlat halı yıkama fiyatları ne kadar?",
     answer:
-      "Halı yıkama m² başına 90₺'den başlamaktadır. Kilim, yün, bambu ve ipek halılar için farklı fiyat uygulanır. Güncel liste için 0555 063 13 14'ü arayabilir ya da ana sayfamızdaki fiyat listesini inceleyebilirsiniz.",
+      "Halı yıkama m² başına 100₺'den başlamaktadır. Kilim, yün, bambu ve ipek halılar için farklı fiyat uygulanır. Güncel liste için 0555 063 13 14'ü arayabilir ya da ana sayfamızdaki fiyat listesini inceleyebilirsiniz.",
   },
   {
     question: "Halılarım ne kadar sürede teslim edilir?",
@@ -342,7 +342,9 @@ export default function AhlatHaliYikamaPage() {
     <div className="min-h-screen bg-white font-sans selection:bg-blue-200">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(localBusinessJsonLd),
+        }}
       />
       <script
         type="application/ld+json"
@@ -480,8 +482,8 @@ export default function AhlatHaliYikamaPage() {
                 Salı, Perşembe ve Cumartesi
               </strong>{" "}
               ücretsiz servisimizle geliyoruz. Halı, yorgan ve koltuk yıkama
-              için Adilcevaz&apos;daki fabrikamızda endüstriyel temizlik yapılır,
-              1-2 günde evinize teslim edilir.
+              için Adilcevaz&apos;daki fabrikamızda endüstriyel temizlik
+              yapılır, 1-2 günde evinize teslim edilir.
             </motion.p>
 
             <motion.div
@@ -562,11 +564,13 @@ export default function AhlatHaliYikamaPage() {
                 Ahlat&apos;a Ücretsiz Servis Günleri
               </h2>
               <p className="text-slate-500 font-medium text-sm md:text-base">
-                Her{" "}
-                <span className="text-emerald-600 font-semibold">Salı</span>,{" "}
+                Her <span className="text-emerald-600 font-semibold">Salı</span>
+                ,{" "}
                 <span className="text-emerald-600 font-semibold">Perşembe</span>{" "}
                 ve{" "}
-                <span className="text-emerald-600 font-semibold">Cumartesi</span>{" "}
+                <span className="text-emerald-600 font-semibold">
+                  Cumartesi
+                </span>{" "}
                 günleri Ahlat&apos;a{" "}
                 <span className="underline decoration-emerald-500/50 decoration-2 underline-offset-4">
                   ücretsiz servisimiz
@@ -734,7 +738,8 @@ export default function AhlatHaliYikamaPage() {
                 </strong>{" "}
                 (teslim alma, net fiyatlandırma ve yola çıkma). Adilcevaz
                 fabrikamızda toz alma, leke müdahalesi, tam otomatik yıkama ve
-                kapalı alan kurutma yapıldıktan sonra parfümleyip ambalajlıyoruz.
+                kapalı alan kurutma yapıldıktan sonra parfümleyip
+                ambalajlıyoruz.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6 mb-10">
@@ -766,8 +771,8 @@ export default function AhlatHaliYikamaPage() {
                   ))}
                 </ul>
                 <p className="text-slate-400 text-xs mt-3 leading-relaxed">
-                  Listede olmayan mahalle veya köy için de arayabilirsiniz — rotaya
-                  dahil edebiliriz.
+                  Listede olmayan mahalle veya köy için de arayabilirsiniz —
+                  rotaya dahil edebiliriz.
                 </p>
               </div>
             </motion.div>
@@ -799,9 +804,7 @@ export default function AhlatHaliYikamaPage() {
                 className="border border-slate-200 rounded-2xl overflow-hidden"
               >
                 <button
-                  onClick={() =>
-                    setOpenFaq(openFaq === index ? null : index)
-                  }
+                  onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   className="w-full flex items-center justify-between px-6 py-5 text-left bg-white hover:bg-slate-50 transition-colors"
                 >
                   <span className="font-semibold text-slate-800 pr-4">

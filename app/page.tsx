@@ -53,7 +53,7 @@ const PRICING_DATA = {
     { name: "Elyaf Yorgan Yıkama", price: "600₺", unit: "ADET" },
     { name: "Yün Yorgan Yıkama", price: "750₺", unit: "ADET" },
     { name: "Yorgan Yıkama (Bebek)", price: "500₺", unit: "ADET" },
-    { name: "Perde Yıkama", price: "100₺", unit: "M2" },
+    { name: "Perde Yıkama", price: "120₺", unit: "M2" },
     { name: "Tül Perde Yıkama", price: "750₺", unit: "ADET" },
     { name: "Tek Halı Yıkama", price: "120₺", unit: "M2" },
     { name: "Bambu Halı Yıkama", price: "120₺", unit: "M2" },
@@ -247,6 +247,7 @@ const GALLERY_VIDEOS = [
   "/about-vd5.mp4",
   "/about-vd6.mp4",
   "/about-vd7.mp4",
+  "/about-vd8.mp4",
 ];
 
 const GALLERY_ITEMS = [

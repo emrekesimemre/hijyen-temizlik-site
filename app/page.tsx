@@ -47,8 +47,8 @@ const CONTACT_INFO = {
 const PRICING_DATA = {
   hali: [
     { name: "Halı Yıkama", price: "100₺", unit: "M2" },
-    { name: "Kilim-Savan Yıkama", price: "100₺", unit: "M2" },
-    { name: "Yün Halı Yıkama", price: "100₺", unit: "M2" },
+    { name: "Kilim-Savan Yıkama", price: "110₺", unit: "M2" },
+    { name: "Yün Halı Yıkama", price: "120₺", unit: "M2" },
     { name: "Battaniye Yıkama", price: "400₺", unit: "ADET" },
     { name: "Elyaf Yorgan Yıkama", price: "600₺", unit: "ADET" },
     { name: "Yün Yorgan Yıkama", price: "750₺", unit: "ADET" },
